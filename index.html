@@ -1,93 +1,87 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<title>Errands Reminder</title>
-
-<style>
-body{
-    font-family:Arial,sans-serif;
-    background:#f5f5f5;
-    margin:0;
-    padding:20px;
-}
-
-.card{
-    background:white;
-    max-width:500px;
-    margin:auto;
-    padding:20px;
-    border-radius:12px;
-    box-shadow:0 2px 10px rgba(0,0,0,.15);
-}
-
-h1{
-    text-align:center;
-}
-
-.task{
-    padding:12px;
-    margin:8px 0;
-    background:#eee;
-    border-radius:8px;
-}
-
-.done{
-    text-decoration:line-through;
-    color:gray;
-}
-
-button{
-    width:100%;
-    padding:12px;
-    margin-top:15px;
-    border:none;
-    border-radius:8px;
-    background:#007aff;
-    color:white;
-    font-size:16px;
-}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f5f6fa">
+  <meta name="description" content="A simple, private errands checklist with reminders that works offline.">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="style.css">
+  <title>Errands Reminder</title>
 </head>
-
 <body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="Errands Reminder home">
+        <span class="brand-mark" aria-hidden="true">✓</span>
+        <span>Errands<span class="brand-light"> Reminder</span></span>
+      </a>
+      <div class="header-actions">
+        <button class="icon-button" id="themeToggle" type="button" aria-label="Switch to dark mode" title="Toggle appearance"><span id="themeIcon" aria-hidden="true">☾</span></button>
+        <button class="profile-mark" type="button" aria-label="Your errands">ER</button>
+      </div>
+    </header>
 
-<div class="card">
-<h1>🔔 Errands</h1>
+    <main>
+      <section class="welcome-row">
+        <div>
+          <p class="eyebrow" id="todayLabel">YOUR DAY</p>
+          <h1>Make today count.</h1>
+          <p class="welcome-copy">A little progress goes a long way.</p>
+        </div>
+        <div class="progress-card" aria-live="polite">
+          <div class="progress-top"><span>Today's progress</span><strong id="progressText">0 of 0</strong></div>
+          <div class="progress-track"><span id="progressBar"></span></div>
+        </div>
+      </section>
 
-<div class="task">
-<input type="checkbox" onclick="toggle(this)">
-<span>Buy hardware at Ace Hardware</span>
-</div>
+      <section class="notification-banner" id="notificationBanner" aria-live="polite">
+        <span class="status-dot" id="notificationDot"></span>
+        <span class="notification-copy" id="notificationStatus">Checking notification status…</span>
+        <button class="text-button" id="notificationAction" type="button">Enable</button>
+      </section>
 
-<div class="task">
-<input type="checkbox" onclick="toggle(this)">
-<span>Return core battery to O'Reilly's</span>
-</div>
+      <div class="section-heading">
+        <div><h2>Today's tasks</h2><span class="count-pill" id="todayCount">0</span></div>
+        <button class="add-button" id="addTaskButton" type="button"><span aria-hidden="true">＋</span> Add task</button>
+      </div>
+      <section class="task-list" id="todayTasks" aria-label="Today's tasks"></section>
 
-<div class="task">
-<input type="checkbox" onclick="toggle(this)">
-<span>Buy replacement battery</span>
-</div>
+      <section class="secondary-section">
+        <div class="section-heading compact-heading"><div><h2>Upcoming</h2><span class="count-pill" id="upcomingCount">0</span></div></div>
+        <section class="task-list" id="upcomingTasks" aria-label="Upcoming tasks"></section>
+      </section>
 
-<button onclick="remind()">Show Reminder</button>
-</div>
+      <section class="secondary-section completed-section">
+        <button class="completed-heading" id="completedToggle" type="button" aria-expanded="true">
+          <span><span class="chevron" id="completedChevron">⌄</span><span class="completed-title">Completed</span><span class="count-pill" id="completedCount">0</span></span>
+        </button>
+        <section class="task-list" id="completedTasks" aria-label="Completed tasks"></section>
+      </section>
 
-<script>
-function toggle(box){
-    const text = box.nextElementSibling;
-    text.classList.toggle('done', box.checked);
-}
+      <footer><span>Your errands stay on this device.</span><span class="offline-label"><span class="offline-dot"></span> Works offline</span></footer>
+    </main>
+  </div>
 
-function remind(){
-    alert(
-      "Ace Hardware: Buy hardware\n\n" +
-      "O'Reilly's: Return core battery and buy a new battery."
-    );
-}
-</script>
-
+  <dialog id="taskDialog" aria-labelledby="dialogTitle">
+    <form id="taskForm">
+      <div class="dialog-header"><div><p class="eyebrow">TASK DETAILS</p><h2 id="dialogTitle">Add a task</h2></div><button class="icon-button close-button" id="closeDialog" type="button" aria-label="Close">×</button></div>
+      <input type="hidden" id="taskId">
+      <label for="taskTitle">Task title <span class="required">*</span></label>
+      <input id="taskTitle" name="title" maxlength="120" placeholder="What do you need to do?" required autocomplete="off">
+      <label for="taskNotes">Notes <span class="optional">Optional</span></label>
+      <textarea id="taskNotes" name="notes" rows="3" maxlength="500" placeholder="Add a detail, address, or reminder…"></textarea>
+      <div class="form-row">
+        <div><label for="taskDate">Due date <span class="optional">Optional</span></label><input id="taskDate" name="date" type="date"></div>
+        <div><label for="taskTime">Reminder time <span class="optional">Optional</span></label><input id="taskTime" name="time" type="time"></div>
+      </div>
+      <p class="form-hint">Reminders can notify you while this app is open. Background delivery depends on your browser and device.</p>
+      <div class="dialog-actions"><button class="secondary-button" id="cancelDialog" type="button">Cancel</button><button class="primary-button" type="submit">Save task</button></div>
+    </form>
+  </dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="app.js" defer></script>
 </body>
 </html>
