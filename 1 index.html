@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Errands Reminder</title>
+
+<style>
+body{
+    font-family:Arial,sans-serif;
+    background:#f5f5f5;
+    margin:0;
+    padding:20px;
+}
+
+.card{
+    background:white;
+    max-width:500px;
+    margin:auto;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 2px 10px rgba(0,0,0,.15);
+}
+
+h1{
+    text-align:center;
+}
+
+.task{
+    padding:12px;
+    margin:8px 0;
+    background:#eee;
+    border-radius:8px;
+}
+
+.done{
+    text-decoration:line-through;
+    color:gray;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    margin-top:15px;
+    border:none;
+    border-radius:8px;
+    background:#007aff;
+    color:white;
+    font-size:16px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+<h1>🔔 Errands</h1>
+
+<div class="task">
+<input type="checkbox" onclick="toggle(this)">
+<span>Buy hardware at Ace Hardware</span>
+</div>
+
+<div class="task">
+<input type="checkbox" onclick="toggle(this)">
+<span>Return core battery to O'Reilly's</span>
+</div>
+
+<div class="task">
+<input type="checkbox" onclick="toggle(this)">
+<span>Buy replacement battery</span>
+</div>
+
+<button onclick="remind()">Show Reminder</button>
+</div>
+
+<script>
+function toggle(box){
+    const text = box.nextElementSibling;
+    text.classList.toggle('done', box.checked);
+}
+
+function remind(){
+    alert(
+      "Ace Hardware: Buy hardware\n\n" +
+      "O'Reilly's: Return core battery and buy a new battery."
+    );
+}
+</script>
+
+</body>
+</html>
